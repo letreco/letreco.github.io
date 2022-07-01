@@ -1,3 +1,5 @@
+name: linter
+
 on:
   push:
     branches:
@@ -24,3 +26,15 @@ jobs:
             system "diff #{html} #{html}.badass", exception: true
             system "rm #{html}.badass"
           end'
+          
+  htmlhint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+
+      - name: checkout htmlhint
+        run: sudo npm install htmlhint -g
+        
+      - name: verify project
+        run: htmlhint
