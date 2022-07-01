@@ -1,0 +1,40 @@
+name: linter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  htmlbeautifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+
+      - name: checkout htmlbeautifier
+        run: sudo gem install htmlbeautifier
+        
+      - name: verify project
+        run: >
+          ruby -e 'Dir.glob "*.html" do |html|
+            puts "> checking #{html}..."
+            system "htmlbeautifier < #{html} > #{html}.badass"
+            system "diff #{html} #{html}.badass", exception: true
+            system "rm #{html}.badass"
+          end'
+          
+  htmlhint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+
+      - name: checkout htmlhint
+        run: sudo npm install htmlhint -g
+        
+      - name: verify project
+        run: htmlhint
